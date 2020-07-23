@@ -60,6 +60,10 @@ public class TicTacToe {
         return player_2;
     }
 
+    public Player getPlayer(boolean first) {
+        return player_1.isFirst() ? player_1 : player_2;
+    }
+
     // Setters
     public void setBoard(char[][] board) {
         this.board = board;
@@ -108,6 +112,7 @@ public class TicTacToe {
      * @return true if input is legal and false if input is illegal or occupied
      */
     public boolean readCoordinates() {
+        // TODO: Using class Coordinate to rewrite this method
         Scanner scanner = new Scanner(System.in);
 
         System.out.print("Enter the coordinates: ");
