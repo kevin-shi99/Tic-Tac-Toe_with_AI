@@ -1,18 +1,11 @@
 package tictactoe;
 
-import java.util.*;
+import java.util.Scanner;
 
 enum GameStates {
     ON, DRAW, X_WIN, O_WIN
 }
 
-enum GameDifficulty {
-    EASY, MEDIUM, HARD
-}
-
-enum  GameType {
-    USER_USER, USER_AI, AI_USER, AI_AI
-}
 
 /** Class TicTacToe, the prototype of the game
  *
@@ -28,8 +21,6 @@ public class TicTacToe {
     private int cntO = 0;
 
     private GameStates states = GameStates.ON;
-    private GameType type;
-    private GameDifficulty diff;
 
     // Two players
     private Player player_1;
@@ -47,14 +38,6 @@ public class TicTacToe {
 
     public GameStates getStates() {
         return states;
-    }
-
-    public GameType getType() {
-        return type;
-    }
-
-    public GameDifficulty getDiff() {
-        return diff;
     }
 
     public char[][] getBoard() {
@@ -320,7 +303,3 @@ public class TicTacToe {
         }
     }
 }
-
-
-
-
