@@ -17,7 +17,7 @@ enum  GameType {
 /** Class TicTacToe, the prototype of the game
  *
  */
-class TicTacToe {
+public class TicTacToe {
     // Field
     private char[][] board = new char[3][3];
 
@@ -30,6 +30,10 @@ class TicTacToe {
     private GameStates states = GameStates.ON;
     private GameType type;
     private GameDifficulty diff;
+
+    // Two players
+    private Player player_1;
+    private Player player_2;
 
 
     // Getters
@@ -63,6 +67,14 @@ class TicTacToe {
 
     public int getCntX() {
         return cntX;
+    }
+
+    public Player getPlayer_1() {
+        return player_1;
+    }
+
+    public Player getPlayer_2() {
+        return player_2;
     }
 
     // Setters
@@ -124,9 +136,15 @@ class TicTacToe {
         try {
             column = Integer.parseInt(inputArray[0]);
             row = Integer.parseInt(inputArray[1]);
-        } catch (Exception e) {
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("You should enter two numbers!");
+            return false;
+        } catch (NumberFormatException e) {
             System.out.println("You should enter numbers!");
             return false;
+        } catch (Exception e) {
+            System.out.println("You should enter two integers ranging from 1 to 3" +
+                    " separated by a space!");
         }
 
         // Check if coordinate is in range
@@ -147,6 +165,21 @@ class TicTacToe {
 
         // Has checked all possible errors, now the user input is legal
         return true;
+    }
+
+    private Player selectSecondPlayer(String command) {
+        if ("user".equals(command)) {
+            return new User(this);
+        } else if ("easy".equals(command)) {
+            return new EasyComputer(this);
+        } else if ("medium".equals(command)) {
+            return new MediumComputer(this);
+        } else if ("hard".equals(command)) {
+            return new HardComputer(this);
+        } else {
+            System.out.println("Bad parameters!");
+            return null;
+        }
     }
 
     /** Process initiate command.
@@ -175,36 +208,44 @@ class TicTacToe {
         // Haven't been fully implemented
         switch (inputArray[1]) {
             case "user":
-                if ("user".equals(inputArray[2])) {
-                    type = GameType.USER_USER;
-                } else if ("easy".equals(inputArray[2])) {
-                    type = GameType.USER_AI;
-                    diff = GameDifficulty.EASY;
-                } else if ("medium".equals(inputArray[2])) {
-                    type = GameType.USER_AI;
-                    diff = GameDifficulty.MEDIUM;
-                } else if ("hard".equals(inputArray[2])) {
-                    type = GameType.USER_AI;
-                    diff = GameDifficulty.HARD;
-                } else {
-                    System.out.println("Bad parameters!");
+                player_1 = new User(this, true);
+
+                player_2 = selectSecondPlayer(inputArray[2]);
+                if (player_2 == null) {
                     return false;
                 }
+
+                player_2.setFirst(false);
                 break;
             case "easy":
-                if ("user".equals(inputArray[2])) {
-                    type = GameType.AI_USER;
-                    diff = GameDifficulty.EASY;
-                } else if ("easy".equals(inputArray[2])) {
-                    type = GameType.AI_AI;
-                    diff = GameDifficulty.EASY;
-                } else if ("medium".equals(inputArray[2])) {
-                    type = GameType.AI_AI;
-                    diff = GameDifficulty.EASY;
-                } else {
-                    System.out.println("Bad parameters!");
+                player_1 = new EasyComputer(this, true);
+
+                player_2 = selectSecondPlayer(inputArray[2]);
+                if (player_2 == null) {
                     return false;
                 }
+
+                player_2.setFirst(false);
+                break;
+            case "medium":
+                player_1 = new MediumComputer(this, true);
+
+                player_2 = selectSecondPlayer(inputArray[2]);
+                if (player_2 == null) {
+                    return false;
+                }
+
+                player_2.setFirst(false);
+                break;
+            case "hard":
+                player_1 = new HardComputer(this, true);
+
+                player_2 = selectSecondPlayer(inputArray[2]);
+                if (player_2 == null) {
+                    return false;
+                }
+
+                player_2.setFirst(false);
                 break;
             default:
                 System.out.println("Bad parameters!");
@@ -215,7 +256,8 @@ class TicTacToe {
         return true;
     }
 
-    /** Check and update the state of te game (On, X wins, O wins or draw)
+
+    /** Check and update the state of te game (On, X wins, O wins or draw).
      * Alter the state field, print out the state of the game (X wins, O wins or Draw)
      */
     public void checkState() {
@@ -279,160 +321,6 @@ class TicTacToe {
     }
 }
 
-/** Class user
- * constructed by taking an argument of game (TicTacToe) object
- * public method: makeMove()
- */
-class User {
-    final private TicTacToe game;
 
-    private int number = 0;
 
-    public User(TicTacToe thisGame) {
-        this.game = thisGame;
-    }
 
-    public User(TicTacToe thisGame, int number) {
-        this.number = number;
-        this.game = thisGame;
-    }
-
-    public void makeMove() {
-        int col = game.getColumn();
-        int row = game.getRow();
-        char[][] currentBoard = game.getBoard();
-
-        currentBoard[row][col] = move();
-    }
-
-    private char move() {
-        if (game.getType() == GameType.AI_USER) {
-            game.setCntO(game.getCntO() + 1);
-            return 'O';
-        } else if (game.getType() == GameType.USER_AI) {
-            game.setCntX(game.getCntX() + 1);
-            return 'X';
-        } else if (game.getType() == GameType.USER_USER) {
-            if (number == 1) {
-                game.setCntX(game.getCntX() + 1);
-                return 'X';
-            } else if (number == 2) {
-                game.setCntO(game.getCntO() + 1);
-                return 'O';
-            }
-        }
-
-        return ' ';
-    }
-}
-
-/** Class computer
- * constructed by taking an argument of game (TicTacToe) object
- * Public method: makeMove()
- * private method: easyMove(), mediumMove(), hardMove()
- */
-class Computer {
-    // Fields
-    private GameDifficulty diff;
-
-    final private TicTacToe game;
-
-    private int number = 0;
-
-    public Computer(TicTacToe thisGame) {
-        this.diff = thisGame.getDiff();
-        this.game = thisGame;
-    }
-
-    public Computer(TicTacToe thisGame, int number) {
-        this.number = number;
-        this.diff = thisGame.getDiff();
-        this.game = thisGame;
-    }
-
-    public void makeMove() {
-        switch (diff) {
-            case EASY:
-                easyMove();
-                break;
-            case MEDIUM:
-                mediumMove();
-                break;
-            case HARD:
-                hardMove();
-                break;
-        }
-    }
-
-    /** Computer takes move, level: easy
-     * Each move is completely random.
-     *
-     */
-    private void easyMove() {
-        Random rand = new Random();
-
-        boolean empty = false; // Is false if the generated coordinate is occupied
-        int rndRow;
-        int rndCol;
-
-        char[][] currentBoard = game.getBoard();
-
-        do {
-            // Generate random integers from 0 to 2
-            rndRow = rand.nextInt(3);
-            rndCol = rand.nextInt(3);
-
-            // Check if the generated coordinate is occupied
-
-            if (currentBoard[rndRow][rndCol] == ' ') {
-                empty = true;
-            }
-        } while (!empty);
-
-        currentBoard[rndRow][rndCol] = move();
-
-        game.setBoard(currentBoard);
-
-        System.out.println("Making move level \"easy\"");
-    }
-
-    /** Computer takes move,
-     * level: medium.
-     * Not implemented
-     */
-    private void mediumMove() {
-        System.out.println("Not implemented");
-    }
-
-    /** Computer takes move,
-     * level: hard.
-     * Not implemented
-     */
-    private void hardMove() {
-        System.out.println("Not implemented");
-    }
-
-    /** Decide which side computer takes, based on the type of game
-     *
-     * @return char 'X', 'O' or ' '
-     */
-    private char move() {
-        if (game.getType() == GameType.AI_USER) {
-            game.setCntX(game.getCntX() + 1);
-            return 'X';
-        } else if (game.getType() == GameType.USER_AI) {
-            game.setCntO(game.getCntO() + 1);
-            return 'O';
-        } else if (game.getType() == GameType.AI_AI) {
-            if (number == 1) {
-                game.setCntX(game.getCntX() + 1);
-                return 'X';
-            } else if (number == 2) {
-                game.setCntO(game.getCntO() + 1);
-                return 'O';
-            }
-        }
-
-        return ' ';
-    }
-}
