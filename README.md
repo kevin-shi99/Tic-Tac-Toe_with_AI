@@ -30,6 +30,8 @@ Currently this game only has "easy" level and "medium" level.
 - **easy** means the computer will take each move randomly
 - **medium** means if computer is going to will in one move, it will play the right move. If computer's opponent is going to win in one move, it will take the move (at least try its best to prevent it from happening. In other cases, computer takes random moves.
 
+*Difficult level "hard" will be available soon.*
+
 ## Example
 ```
 Input command: start user medium
