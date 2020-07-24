@@ -1,8 +1,8 @@
-# Tic-Tac-Toe_with_AI
+# Tic-Tac-Toe with AI
 A JatBrains Academy Project. Build a simple game "TicTacToe".
 
 ## Source Code
-In the directory `/TicTacToe/task/src`.
+In the directory `/Tic-Tac-Toe with AI/task/src/tictactoe`.
 
 Contains four classes, `Main.java`, `Player.java`, `TicTacToe.java`, `Coordinate.java`.
 
