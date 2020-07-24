@@ -1,9 +1,13 @@
 package tictactoe;
 
-// TODO: Use class Coordinate to re write the program
 public class Coordinate {
     private int row;
     private int col;
+
+    public Coordinate() {
+        this.row = -1;
+        this.col = -1;
+    }
 
     public Coordinate(int row, int col) {
         this.row = row;
@@ -27,5 +31,17 @@ public class Coordinate {
         this.col = col;
     }
 
-    // TODO: complete class Coordinate, replenish method such as isLegal()
+    public void setCoordinate(int row, int col) {
+        this.row = row;
+        this.col = col;
+    }
+
+
+    public boolean isLegal() {
+        if (0 <= row && row <= 2 && 0 <= col && col <= 2) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

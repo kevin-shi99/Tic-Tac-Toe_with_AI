@@ -19,10 +19,6 @@ public class Player {
 
     protected boolean first;    // If player is the first to play, first is true
 
-    protected int nextRow;
-
-    protected int nextCol;      // the coordinate of player's next (predicted) move
-
 
     // Constructors
     public Player(TicTacToe thisGame) {
@@ -40,13 +36,15 @@ public class Player {
         return first;
     }
 
+
+
     //Setters
     public void setFirst(boolean first) {
         this.first = first;
     }
 
     public void makeMove() {
-        return;
+
     }
 
 
@@ -56,18 +54,22 @@ public class Player {
      */
     protected char move() {
 
-        if (this.first == true) {
-            game.setCntX(game.getCntX() + 1);
+        if (this.first) {
             return 'X';
         } else {
-            game.setCntO(game.getCntO() + 1);
             return 'O';
         }
 
     }
 
-    protected boolean isWinning(char[][] board) {
-        // TODO: method isWinning and isLosing have bugs
+    /** <p>This method determine if the player that calls this method is going to win in one move
+     * .</p>
+     * <p>Returns the Coordinate of winning move if is is winning, returns null if is is not
+     * going to win.</p>
+     * @param board  char[][]
+     * @return boolean
+     */
+    protected Coordinate winningMove(char[][] board) {
         int i;
         int j;
 
@@ -83,10 +85,9 @@ public class Player {
                 }
             }
 
-            if (cntMove == 2) {
-                nextRow = i;
-                nextCol = emptyCol;
-                return true;
+            // emptyCol != -1 to ensure three cells are all occupied
+            if (cntMove == 2 && emptyCol != -1) {
+                return new Coordinate(i, emptyCol);
             }
         }
 
@@ -102,10 +103,9 @@ public class Player {
                 }
             }
 
-            if (cntMove == 2) {
-                nextCol = j;
-                nextRow = emptyRow;
-                return true;
+
+            if (cntMove == 2 && emptyRow != -1) {
+                return new Coordinate(emptyRow, j);
             }
         }
 
@@ -120,9 +120,8 @@ public class Player {
             }
         }
 
-        if (cntMove == 2) {
-            nextRow = nextCol = empty;
-            return true;
+        if (cntMove == 2 && empty != -1) {
+            return new Coordinate(empty, empty);
         }
 
         // Check counter-diagonal
@@ -134,21 +133,31 @@ public class Player {
             } else if (board[i][2 - i] == move()) {
                 cntMove++;
             }
+
+            if (cntMove == 2 && empty != -1) {
+                return new Coordinate(empty, 2 - empty);
+            }
         }
 
-        return false;
+        return null;
     }
 
 
-    protected boolean isLosing(char[][] board) {
-        Player opponent = game.getPlayer(!first);
-        if (opponent.isWinning(board)) {
-            return true;
-        } else {
-            return false;
-        }
+    protected Coordinate losingMove(char[][] board) {
+
+        Player opponent = game.getPlayer(!first);   // Select the opponent by inverting the first
+
+        return opponent.winningMove(board);
     }
 
+
+    protected void countMove() {
+        if (move() == 'X') {
+            game.setCntX(game.getCntX() + 1);
+        } else if (move() == 'O') {
+            game.setCntO(game.getCntO() + 1);
+        }
+    }
 }
 
 
@@ -211,16 +220,12 @@ class EasyComputer extends Computer {
     @Override
     public void makeMove() {
         randomMove();
+        countMove();
         System.out.println("Making move level \"easy\"");
     }
 }
 
-// TODO: fix class MediumComputer
 class MediumComputer extends Computer {
-
-    // Fields
-    int nextRow;
-    int nextCol;    // Coordinate of next winning or defending move
 
     public MediumComputer(TicTacToe game) {
         super(game);
@@ -234,15 +239,22 @@ class MediumComputer extends Computer {
     public void makeMove() {
         char[][] currentBoard = game.getBoard();
 
-        if (isWinning(currentBoard)) {
-            currentBoard[nextRow][nextCol] = move();
-            game.setBoard(currentBoard);
-        } else if (isLosing(currentBoard)) {
-            currentBoard[nextRow][nextCol] = move();
+        Coordinate nextMove = this.winningMove(currentBoard);
+
+        if (nextMove != null) {
+            currentBoard[nextMove.getRow()][nextMove.getCol()] = move();
             game.setBoard(currentBoard);
         } else {
-            randomMove();
+            nextMove = this.losingMove(currentBoard);
+            if (nextMove != null) {
+                currentBoard[nextMove.getRow()][nextMove.getCol()] = move();
+                game.setBoard(currentBoard);
+            } else {
+                randomMove();
+            }
         }
+
+        countMove();
 
         System.out.println("Making move level \"medium\"");
     }
@@ -274,11 +286,13 @@ class User extends Player {
 
     @Override
     public void makeMove() {
-        int col = game.getColumn();
-        int row = game.getRow();
+        Coordinate move = game.getUserMove();
+
         char[][] currentBoard = game.getBoard();
 
-        currentBoard[row][col] = move();
+        currentBoard[move.getRow()][move.getCol()] = move();
+
+        game.setBoard(currentBoard);
     }
 }
 

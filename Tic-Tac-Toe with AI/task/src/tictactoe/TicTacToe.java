@@ -14,13 +14,13 @@ public class TicTacToe {
     // Field
     private char[][] board = new char[3][3];
 
-    private int column; // User input column
-    private int row; // User input row
 
     private int cntX = 0;
     private int cntO = 0;
 
     private GameStates states = GameStates.ON;
+
+    private Coordinate userMove = new Coordinate();
 
     // Two players
     private Player player_1;
@@ -28,13 +28,6 @@ public class TicTacToe {
 
 
     // Getters
-    public int getColumn() {
-        return column;
-    }
-
-    public int getRow() {
-        return row;
-    }
 
     public GameStates getStates() {
         return states;
@@ -61,7 +54,11 @@ public class TicTacToe {
     }
 
     public Player getPlayer(boolean first) {
-        return player_1.isFirst() ? player_1 : player_2;
+        return player_1.isFirst() == first ? player_1 : player_2;
+    }
+
+    public Coordinate getUserMove() {
+        return userMove;
     }
 
     // Setters
@@ -112,7 +109,10 @@ public class TicTacToe {
      * @return true if input is legal and false if input is illegal or occupied
      */
     public boolean readCoordinates() {
-        // TODO: Using class Coordinate to rewrite this method
+
+        int column = -1;
+        int row = -1;
+
         Scanner scanner = new Scanner(System.in);
 
         System.out.print("Enter the coordinates: ");
@@ -135,15 +135,15 @@ public class TicTacToe {
                     " separated by a space!");
         }
 
+        // Convert input coordinate to array coordinate used in the class
+
+        userMove.setCoordinate(--row, --column);
+
         // Check if coordinate is in range
-        if (column < 1 || column > 3 || row < 1 || row > 3) {
+        if (!userMove.isLegal()) {
             System.out.println("Coordinates should be from 1 to 3!");
             return false;
         }
-
-        // Convert input coordinate to array coordinate used in the class
-        column -= 1;
-        row -= 1;
 
         // Check whether the input coordinate is occupied or not
         if (board[row][column] == 'X' || board[row][column] == 'O') {
