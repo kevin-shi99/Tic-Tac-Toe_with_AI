@@ -5,12 +5,20 @@ public class Main {
     public static void main(String[] args) {
         TicTacToe game = new TicTacToe();
 
-        while (!game.processInit())
-            ;
-        game.printBoard();
+        //TODO: Bug: Game cannot be initialized after a loop
+        do {
+            boolean flag = game.processInit();
 
-        startGame(game.getPlayer_1(), game.getPlayer_2(), game);
-        game.printResult();
+            if (game.getStates() == GameStates.OFF) {
+                break;
+            } else if (!flag) {
+                continue;
+            }
+
+            game.printBoard();
+            startGame(game.getPlayer_1(), game.getPlayer_2(), game);
+            game.printResult();
+        } while (true);
     }
 
     private static void startGame(Player player1, Player player2, TicTacToe game) {

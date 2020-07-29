@@ -3,7 +3,7 @@ package tictactoe;
 import java.util.Scanner;
 
 enum GameStates {
-    ON, DRAW, X_WIN, O_WIN
+    ON, DRAW, X_WIN, O_WIN, OFF
 }
 
 
@@ -177,14 +177,19 @@ public class TicTacToe {
     public boolean processInit() {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Input command: ");
+        System.out.print("\nInput command: ");
         String input = scanner.nextLine();
 
         String[] inputArray= input.split(" ");
 
         if (inputArray.length < 3) {
-            System.out.println("Bad parameters!");
-            return false;
+            if ("exit".equals(inputArray[0])) {
+                this.states = GameStates.OFF;
+                return true;
+            } else {
+                System.out.println("Bad parameters!");
+                return false;
+            }
         }
 
         if (!"start".equals(inputArray[0])) {
@@ -306,5 +311,9 @@ public class TicTacToe {
         } else if (states == GameStates.DRAW) {
             System.out.println("Draw");
         }
+    }
+
+    public void clearGame() {
+
     }
 }

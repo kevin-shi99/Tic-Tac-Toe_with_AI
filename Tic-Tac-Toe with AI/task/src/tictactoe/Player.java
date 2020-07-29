@@ -13,7 +13,7 @@ import java.util.Random;
  * second</p>
  *
  */
-public class Player {
+abstract class Player {
 
     final protected TicTacToe game;
 
@@ -43,9 +43,8 @@ public class Player {
         this.first = first;
     }
 
-    public void makeMove() {
-
-    }
+    // Abstract method to be implemented
+    abstract public void makeMove();
 
 
     /** This method decides which move ("X" or "O") to take.
@@ -158,10 +157,13 @@ public class Player {
             game.setCntO(game.getCntO() + 1);
         }
     }
+
+
+
 }
 
 
-class Computer extends Player{
+abstract class Computer extends Player{
 
     // Constructors
     public Computer(TicTacToe game) {
@@ -173,7 +175,8 @@ class Computer extends Player{
     }
 
 
-    /** Computer take random move
+    /** This method is for computers only.
+     * Computer takes random move.
      *
      */
     protected void randomMove() {
@@ -269,6 +272,11 @@ class HardComputer extends Computer {
 
     public HardComputer(TicTacToe game, boolean first) {
         super(game, first);
+    }
+
+    @Override
+    public void makeMove() {
+
     }
 }
 
