@@ -3,8 +3,11 @@ package tictactoe;
 import java.util.Arrays;
 
 class ChessBoard {
+
+    private final int SIZE = 3; // The size of the board is 3 * 3
+
     // Fields
-    private Symbol[][] board;
+    private Symbol[] board;
 
     private boolean xIsNext;
 
@@ -12,15 +15,14 @@ class ChessBoard {
 
     private int countMove;
 
-
-
     /* ******************* API ****************** */
 
     public ChessBoard() {
-        board = new Symbol[3][3];
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                board[i][j] = Symbol.EMPTY;
+        board = new Symbol[SIZE * SIZE];
+
+        for (int row = 1; row < 4; row++) {
+            for (int col = 1; col < 4; col++) {
+                board[toIndex(row, col)] = Symbol.EMPTY;
             }
         }
 
@@ -29,6 +31,10 @@ class ChessBoard {
         countMove = 0;
     }
 
+    public int toIndex(int row, int col) {
+        checkRowCol(row, col);
+        return (row - 1) * SIZE + col - 1;
+    }
 
     public Symbol getWinner() {
         return winner;
@@ -37,9 +43,9 @@ class ChessBoard {
     public void setBoard(int row, int col) {
         checkRowCol(row, col);
         if (xIsNext)
-            board[row - 1][col - 1] = Symbol.X;
+            board[toIndex(row, col)] = Symbol.X;
         else
-            board[row - 1][col - 1] = Symbol.O;
+            board[toIndex(row, col)] = Symbol.O;
 
         nextSymbol();
         countMove++;
@@ -52,7 +58,7 @@ class ChessBoard {
     public void unset(int row, int col) {
         checkRowCol(row, col);
         if (isFull(row, col)) {
-            board[row - 1][col - 1] = Symbol.EMPTY;
+            board[toIndex(row, col)] = Symbol.EMPTY;
         }
         countMove--;
     }
@@ -63,7 +69,7 @@ class ChessBoard {
 
     public boolean isEmpty(int row, int col) {
         checkRowCol(row, col);
-        return board[row - 1][col - 1] == Symbol.EMPTY;
+        return board[toIndex(row, col)] == Symbol.EMPTY;
     }
 
     public boolean isEmpty(Coordinate point) {
@@ -72,7 +78,7 @@ class ChessBoard {
 
     public boolean isX(int row, int col) {
         checkRowCol(row, col);
-        return board[row - 1][col - 1] == Symbol.X;
+        return board[toIndex(row, col)] == Symbol.X;
     }
 
     public boolean isX(Coordinate point) {
@@ -81,7 +87,7 @@ class ChessBoard {
 
     public boolean isO(int row, int col) {
         checkRowCol(row, col);
-        return board[row - 1][col - 1] == Symbol.O;
+        return board[toIndex(row, col)] == Symbol.O;
     }
 
     public boolean isO(Coordinate point) {
@@ -98,15 +104,15 @@ class ChessBoard {
 
     public Symbol getSymbol(int row, int col) {
         checkRowCol(row, col);
-        return board[row - 1][col - 1];
+        return board[toIndex(row, col)];
     }
 
     public void printBoard() {
         System.out.println("---------");
-        for (int i = 3; i > 0; i--) {
+        for (int row = 3; row > 0; row--) {
             System.out.print("| ");
-            for (int j = 1; j < 4; j++) {
-                System.out.print(toString(i, j) + " ");
+            for (int col = 1; col < 4; col++) {
+                System.out.print(toString(row, col) + " ");
             }
             System.out.print("|\n");
         }
@@ -160,8 +166,9 @@ class ChessBoard {
      * @return true if one row is full, false if non of the rows is full.
      */
     private boolean checkRows(Symbol symbol) {
-        for (int i = 0; i < 3; i++) {
-            if (board[i][0] == symbol && board[i][1] == symbol && board[i][2] == symbol) {
+        for (int row = 1; row < 4; row++) {
+            if (board[toIndex(row, 1)] == symbol && board[toIndex(row, 2)] == symbol
+                    && board[toIndex(row,3)] == symbol) {
                 return true;
             }
         }
@@ -175,8 +182,9 @@ class ChessBoard {
      * @return true if one col is full, false if non of the cols is full.
      */
     private boolean checkCols(Symbol symbol) {
-        for (int j = 0; j < 3; j++) {
-            if (board[0][j] == symbol && board[1][j] == symbol && board[2][j] == symbol) {
+        for (int col = 1; col < 4; col++) {
+            if (board[toIndex(1, col)] == symbol && board[toIndex(2, col)] == symbol
+                    && board[toIndex(3, col)] == symbol) {
                 return true;
             }
         }
@@ -185,11 +193,13 @@ class ChessBoard {
     }
 
     private boolean checkPrincipleDiagonal(Symbol symbol) {
-        return board[0][0] == symbol && board[1][1] == symbol && board[2][2] == symbol;
+        return board[toIndex(1, 1)] == symbol && board[toIndex(2, 2)] == symbol
+                && board[toIndex(3, 3)] == symbol;
     }
 
     private boolean checkCounterDiagonal(Symbol symbol) {
-        return board[0][2] == symbol && board[1][1] == symbol && board[2][0] == symbol;
+        return board[toIndex(1, 3)] == symbol && board[toIndex(2, 2)] == symbol
+                && board[toIndex(3, 1)] == symbol;
     }
 
     private boolean checkDiagonals(Symbol symbol) {
@@ -205,6 +215,5 @@ class ChessBoard {
             return " ";
         }
     }
-
 
 }
