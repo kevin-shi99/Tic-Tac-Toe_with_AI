@@ -1,8 +1,5 @@
 package tictactoe;
 
-
-
-
 interface Player {
     /** Select the type of the player
      *
