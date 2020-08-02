@@ -1,13 +1,12 @@
 package tictactoe;
 
-import java.util.Arrays;
-
 class ChessBoard {
 
     private final int SIZE = 3; // The size of the board is 3 * 3
 
     // Fields
-    private Symbol[] board;
+
+    private final Symbol[] board;
 
     private boolean xIsNext;
 
@@ -20,10 +19,9 @@ class ChessBoard {
     public ChessBoard() {
         board = new Symbol[SIZE * SIZE];
 
-        for (int row = 1; row < 4; row++) {
-            for (int col = 1; col < 4; col++) {
-                board[toIndex(row, col)] = Symbol.EMPTY;
-            }
+        for (int i = 0; i < 9; i++) {
+            board[i] = Symbol.EMPTY;
+
         }
 
         xIsNext = true;
@@ -60,6 +58,7 @@ class ChessBoard {
         if (isFull(row, col)) {
             board[toIndex(row, col)] = Symbol.EMPTY;
         }
+        nextSymbol();
         countMove--;
     }
 
@@ -208,11 +207,11 @@ class ChessBoard {
 
     private String toString(int row, int col) {
         if (getSymbol(row, col) == Symbol.X) {
-            return "X";
+            return Symbol.X.getSymbol();
         } else if (getSymbol(row, col) == Symbol.O) {
-            return "O";
+            return Symbol.O.getSymbol();
         } else {
-            return " ";
+            return Symbol.EMPTY.getSymbol();
         }
     }
 

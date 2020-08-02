@@ -10,7 +10,7 @@ public class TicTacToe {
 
     /* ********* Fields ********** */
 
-    private ChessBoard board;
+    private final ChessBoard board;
 
     // Two players
     private Player playerX;
@@ -24,10 +24,6 @@ public class TicTacToe {
         board = new ChessBoard();
     }
 
-
-    public ChessBoard getBoard() {
-        return board;
-    }
 
     public Player PlayerX() {
         return playerX;
