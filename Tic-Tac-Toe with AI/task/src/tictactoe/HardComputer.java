@@ -53,6 +53,7 @@ class HardComputer extends Computer {
     }
 
     private int minimax(ChessBoard board, boolean isMaximizing) {
+
         Symbol winner = board.checkWinner();
         if (winner == Symbol.X) {
             return 1;

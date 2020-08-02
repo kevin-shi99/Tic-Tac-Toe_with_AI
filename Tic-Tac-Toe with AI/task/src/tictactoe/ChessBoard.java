@@ -5,6 +5,7 @@ class ChessBoard {
     private final int SIZE = 3; // The size of the board is 3 * 3
 
     // Fields
+
     private final Symbol[] board;
 
     private boolean xIsNext;
@@ -20,6 +21,7 @@ class ChessBoard {
 
         for (int i = 0; i < 9; i++) {
             board[i] = Symbol.EMPTY;
+
         }
 
         xIsNext = true;
@@ -212,4 +214,5 @@ class ChessBoard {
             return Symbol.EMPTY.getSymbol();
         }
     }
+
 }
